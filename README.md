@@ -5,6 +5,12 @@
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
+## 🌍 Live Demo
+
+- 🚀 [Live API](https://ai-personal-assistant-3xni.onrender.com)
+- 📘 [API Docs](https://ai-personal-assistant-3xni.onrender.com/docs)
+- 🩺 [Health Check](https://ai-personal-assistant-3xni.onrender.com/health)
+
 A highly capable GenAI Personal Assistant designed for production environments. Built with **LangChain**, **FastAPI**, and **APScheduler**, this agent understands natural language commands to manage your calendar, send notifications, and handle emails with enterprise-grade resilience.
 
 ## 🚀 Key Features
