@@ -59,53 +59,6 @@ async def health_check():
 
 
 # --------------------------------------------------
-# Startup / Shutdown Events
-# --------------------------------------------------
-@app.on_event("startup")
-async def startup_event():
-    """Starts the background scheduler on app startup."""
-    logger.info("Application starting up...")
-    try:
-        # Start the scheduler
-        if not meeting_scheduler.scheduler.running:
-            meeting_scheduler.scheduler.start()
-            logger.info("Background scheduler started.")
-        
-        # Add the minute-by-minute reminder check job
-        job_id = "check_meeting_reminders"
-        if not meeting_scheduler.scheduler.get_job(job_id):
-            meeting_scheduler.scheduler.add_job(
-                meeting_scheduler.reminder_service.check_reminders,
-                "interval",
-                minutes=1,
-                id=job_id
-            )
-            logger.info(f"Scheduled periodic reminder check job: {job_id}")
-
-        # Add the daily cleanup job
-        cleanup_job_id = "cleanup_old_meetings"
-        if not meeting_scheduler.scheduler.get_job(cleanup_job_id):
-            meeting_scheduler.scheduler.add_job(
-                meeting_scheduler.cleanup_meetings,
-                "interval",
-                hours=24,
-                id=cleanup_job_id
-            )
-            logger.info(f"Scheduled daily cleanup job: {cleanup_job_id}")
-            
-    except Exception as e:
-        logger.error(f"Failed to start scheduler/jobs: {e}")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Shuts down the background scheduler gracefully."""
-    logger.info("Application shutting down...")
-    if meeting_scheduler.scheduler.running:
-        meeting_scheduler.scheduler.shutdown()
-        logger.info("Background scheduler shut down.")
-
-
-# --------------------------------------------------
 # Chat Endpoint
 # --------------------------------------------------
 @app.post("/chat", response_model=ChatResponse)

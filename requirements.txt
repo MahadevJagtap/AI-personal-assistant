@@ -12,3 +12,4 @@ apscheduler
 pytz
 huggingface-hub
 requests
+pydantic[email]

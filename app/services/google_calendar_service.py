@@ -18,51 +18,49 @@ class GoogleCalendarService:
         self.service = self._authenticate()
 
     def _authenticate(self):
-        """Handles OAuth 2.0 authentication from ENV string or local file."""
+        """Handles OAuth 2.0 authentication without mandatory disk persistence."""
         import json
+        from google.oauth2.credentials import Credentials
+        
         creds = None
+        google_json = self.config.GOOGLE_CREDENTIALS_JSON
         
-        # 1. Try Token Persistence (Local)
-        token_file = 'token.pickle'
-        if os.path.exists(token_file):
-            with open(token_file, 'rb') as token:
-                try:
-                    creds = pickle.load(token)
-                except Exception:
-                    creds = None
-        
-        # 2. If no valid creds, load from JSON Source
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                # Source can be Environment Variable (JSON String) or Local File (calendar.json)
-                google_json = self.config.GOOGLE_CREDENTIALS_JSON
-                
-                try:
-                    if google_json and "{" in google_json:
-                        # Raw JSON string from ENV
-                        creds_dict = json.loads(google_json)
-                        flow = InstalledAppFlow.from_client_config(creds_dict, self.SCOPES)
-                    else:
-                        # Fallback to local file path
-                        json_path = google_json or 'calendar.json'
-                        if not os.path.exists(json_path):
-                            logger.error(f"Google credentials not found (ENV or {json_path})")
-                            return None
-                        flow = InstalledAppFlow.from_client_secrets_file(json_path, self.SCOPES)
-                    
-                    creds = flow.run_local_server(port=0)
-                except Exception as e:
-                    logger.error(f"Authentication flow failed: {e}")
-                    return None
-            
-            # Save the credentials locally if possible (for next run)
+        # 1. Attempt to use environment-based credentials first
+        if google_json:
             try:
-                with open(token_file, 'wb') as token:
-                    pickle.dump(creds, token)
+                creds_dict = json.loads(google_json)
+                # If the string is a serialized token, load it directly
+                if "token" in creds_dict:
+                    creds = Credentials.from_authorized_user_info(creds_dict, self.SCOPES)
+                else:
+                    # If it's a client secret file, run the flow
+                    flow = InstalledAppFlow.from_client_config(creds_dict, self.SCOPES)
+                    # For automated cloud environments, a Refresh Token is better.
+                    # run_local_server is for dev; cloud usually uses pre-authorized tokens.
+                    creds = flow.run_local_server(port=0)
             except Exception as e:
-                logger.warning(f"Could not save token locally: {e}")
+                logger.error(f"Failed to authenticate from GOOGLE_CREDENTIALS_JSON: {e}")
+
+        # 2. Local Fallback (for development)
+        if not creds:
+            token_file = 'token.pickle'
+            if os.path.exists(token_file):
+                with open(token_file, 'rb') as token:
+                    try:
+                        creds = pickle.load(token)
+                    except Exception:
+                        creds = None
+            
+            if not creds or not creds.valid:
+                if creds and creds.expired and creds.refresh_token:
+                    creds.refresh(Request())
+                else:
+                    if os.path.exists('calendar.json'):
+                        flow = InstalledAppFlow.from_client_secrets_file('calendar.json', self.SCOPES)
+                        creds = flow.run_local_server(port=0)
+                    else:
+                        logger.error("No valid Google Calendar credentials found (ENV or local).")
+                        return None
 
         try:
             service = build('calendar', 'v3', credentials=creds)

@@ -13,7 +13,7 @@ class EmailService:
     """
     def __init__(self):
         self.config = Config
-        self.email_address = self.config.EMAIL_ADDRESS
+        self.email_address = self.config.MY_EMAIL
         self.email_password = self.config.EMAIL_PASSWORD
         self.smtp_server = self.config.SMTP_SERVER
         self.smtp_port = self.config.SMTP_PORT

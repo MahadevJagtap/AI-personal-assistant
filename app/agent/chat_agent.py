@@ -10,6 +10,8 @@ from app.agent.registry import get_all_tools
 from app.agent.memory import AgentMemory
 from huggingface_hub import InferenceClient
 
+from app.config import Config
+
 # Configure logging
 logger = logging.getLogger(__name__)
 
@@ -17,21 +19,28 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 class ChatAgent:
+    """
+    Agent that uses Gemini (primary) or Hugging Face (fallback) to process queries.
+    """
     def __init__(self):
-        self.google_api_key = os.getenv("GOOGLE_API_KEY")
+        self.config = Config
+        self.google_api_key = self.config.GEMINI_API_KEY
         self.llm = None
         self.tools = []
         self.tool_map = {}
         self.memory = AgentMemory() # SQLite backed memory
         self.fallback_llm = None
-        self.hf_token = os.getenv("HUGGINGFACE_API_TOKEN")
+        self.hf_token = self.config.HUGGINGFACE_API_TOKEN
         
         self._initialize_agent()
 
     def _initialize_agent(self):
         """Initializes the Agent with Tools and LLM."""
-        if not self.google_api_key:
-            logger.error("GOOGLE_API_KEY not found.")
+        # Set environment variable for langchain integration
+        if self.google_api_key:
+            os.environ["GOOGLE_API_KEY"] = self.google_api_key
+        else:
+            logger.error("GEMINI_API_KEY not found in config.")
             return
 
         try:

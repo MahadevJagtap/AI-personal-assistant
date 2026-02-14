@@ -92,7 +92,7 @@ class ReminderService:
 
         # 2. Send Email with 1 retry
         email_success = False
-        to_email = self.config.EMAIL_ADDRESS
+        to_email = self.config.MY_EMAIL
         if to_email:
             for attempt in range(1, 3):
                 subject = f"🔔 Reminder: {title} starting soon"

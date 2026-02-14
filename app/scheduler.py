@@ -52,8 +52,7 @@ class MeetingScheduler:
     def _reminder_job(self, title: str):
         """Callback function for the reminder."""
         msg = f"🔔 Reminder: Meeting '{title}' is starting soon!"
-        print(f"\n{msg}")
-        logger.info(f"Triggered reminder for '{title}'")
+        logger.info(msg)
         
         # Send WhatsApp Notification
         whatsapp_service.send_message(msg)
