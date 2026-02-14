@@ -11,6 +11,11 @@ logger = logging.getLogger("app.main")
 # We use the app instance from api.main but we could also wrap it here
 app = api_app
 
+@app.get("/health")
+async def health_check():
+    """Lightweight health check for uptime monitoring."""
+    return {"status": "running"}
+
 @app.on_event("startup")
 async def startup_event():
     """Starts the background scheduler on app startup."""
