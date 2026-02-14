@@ -1,0 +1,31 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Environment and Secrets
+.env
+.flaskenv
+token.pickle
+calendar.json
+credentials.json
+*.pem
+*.key
+
+# Development and Debug
+logs/
+*.log
+scripts/debug_outputs/
+scripts/dev_tools/temp_*
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db

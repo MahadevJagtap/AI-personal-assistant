@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Personal Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar for Meetings -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>📅 Meetings</h2>
+                <button id="refresh-meetings" class="icon-btn" title="Refresh">↻</button>
+            </div>
+            <div id="meetings-list" class="meetings-list">
+                <!-- Meetings will be populated here -->
+                <div class="empty-state">No meetings loaded.</div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <button id="open-email-btn" class="secondary-btn">📧 Send Email</button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-interface">
+            <header class="chat-header">
+                <h1>AI Assistant</h1>
+                <div class="status-indicator online"></div>
+            </header>
+            
+            <div id="chat-history" class="chat-history">
+                <div class="message assistant">
+                    <div class="bubble">
+                        Hello! I am your AI Assistant. I can help you schedule meetings, send emails, or answer questions. How can I help you today?
+                    </div>
+                </div>
+            </div>
+
+            <footer class="chat-input-area">
+                <input type="text" id="user-input" placeholder="Type a message..." autocomplete="off">
+                <button id="send-btn" class="primary-btn">➤</button>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Email Modal -->
+    <div id="email-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Compose Email</h2>
+                <button id="close-email-btn" class="close-btn">&times;</button>
+            </div>
+            <form id="email-form">
+                <div class="form-group">
+                    <label for="email-to">To:</label>
+                    <input type="email" id="email-to" placeholder="recipient@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="email-subject">Subject:</label>
+                    <input type="text" id="email-subject" placeholder="Subject" required>
+                </div>
+                <div class="form-group">
+                    <label for="email-body">Message:</label>
+                    <textarea id="email-body" rows="5" placeholder="Write your message here..." required></textarea>
+                </div>
+                <button type="submit" class="primary-btn full-width">Send Email</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
