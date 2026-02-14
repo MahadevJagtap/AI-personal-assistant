@@ -13,3 +13,4 @@ pytz
 huggingface-hub
 requests
 pydantic[email]
+sqlalchemy
