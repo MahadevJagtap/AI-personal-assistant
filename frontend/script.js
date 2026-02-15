@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000";
+const API_URL = window.location.origin === "null" || window.location.protocol === "file:" ? "http://localhost:8000" : window.location.origin;
 
 // DOM Elements
 const chatHistory = document.getElementById('chat-history');
